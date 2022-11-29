@@ -1,5 +1,5 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
-import type MyPlugin from "./main";
+import type StoicInObsidianPlugin from "./main";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ReactView } from "./ReactView";
@@ -12,7 +12,7 @@ const VIEW_TYPE_EXAMPLE = "svelte-view";
 
 class SvelteView extends ItemView {
 	component : Component;
-	plugin : MyPlugin;
+	plugin : StoicInObsidianPlugin;
 
 
 	constructor(leaf: WorkspaceLeaf) {
