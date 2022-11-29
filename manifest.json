@@ -1,10 +1,9 @@
 {
-	"id": "obsidian-instant-coffee",
-	"name": "Instant Coffee",
+	"id": "stoic-in-obsidian",
+	"name": "Stoic-in-Obsidian",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
+	"description": "Journaling app and insights in Obsidian",
+	"author": "Nick Chong",
 	"isDesktopOnly": false
 }
