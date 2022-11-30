@@ -1,4 +1,5 @@
-import {App, normalizePath} from "obsidian";
+import {App, normalizePath, Notice} from "obsidian";
+import type {Moment} from "moment";
 
 export async function getNoteCreationPath(
 	app: App,
@@ -14,7 +15,8 @@ export async function getNoteCreationPath(
 }
 
 /**
- * Checks if a folder exists given a path. If no folder is found, it will create it.
+ * Checks if a folder exists given a path. This function also splits any backslashes into folder paths.
+ * If no folder is found, it will create it.
  * @param app
  * @param path
  */
@@ -28,6 +30,74 @@ async function ensureFolderExists(app: App, path: string): Promise<void> {
 			await app.vault.createFolder(dir);
 		}
 	}
+}
+
+/**
+ * Retrieves the template used for a note, returning the text
+ * @param app
+ * @param templatePath
+ * @private
+ */
+export async function getTemplateContents(
+	app: App,
+	templatePath: string | undefined
+): Promise<string> {
+
+		const { metadataCache, vault } = app;
+		const normalizedTemplatePath = normalizePath(templatePath ?? "");
+		if (templatePath === "/") {
+		return Promise.resolve("");
+	}
+
+	try {
+		const templateFile = metadataCache.getFirstLinkpathDest(normalizedTemplatePath, "");
+		return templateFile ? vault.cachedRead(templateFile) : "";
+	} catch (err) {
+		console.error(
+			`Failed to read the note template '${normalizedTemplatePath}'`,
+			err
+		);
+		new Notice("Failed to read the note template");
+		return "";
+	}
+}
+
+export function applyTemplateTransformations(  filename: string,
+	date: Moment,
+	format: string,
+	rawTemplateContents: string) {
+	let templateContents = rawTemplateContents;
+
+	templateContents = rawTemplateContents
+		.replace(/{{\s*date\s*}}/gi, filename)
+		.replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
+		.replace(/{{\s*title\s*}}ß/gi, filename);
+
+	// Make day-granular transformations
+	templateContents = templateContents
+		.replace(/{{\s*yesterday\s*}}/gi, date.clone().subtract(1, "day").format(format))
+		.replace(/{{\s*tomorrow\s*}}/gi, date.clone().add(1, "d").format(format))
+		.replace(
+			/{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
+			(_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
+				const now = window.moment();
+				const currentDate = date.clone().set({
+					hour: now.get("hour"),
+					minute: now.get("minute"),
+					second: now.get("second"),
+				});
+				if (calc) {
+					currentDate.add(parseInt(timeDelta, 10), unit);
+				}
+
+				if (momentFormat) {
+					return currentDate.format(momentFormat.substring(1).trim());
+				}
+				return currentDate.format(format);
+			}
+		);
+
+	return templateContents;
 }
 
 // Credit: @creationix/path.js
