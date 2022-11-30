@@ -11,7 +11,7 @@
 
 <SettingItem
   name="show emotion questions"
-  description={`asks questions on how you're feeling today and how`}
+  description={`asks questions on how you're feeling today`}
   type="toggle"
   isHeading={false}
 >

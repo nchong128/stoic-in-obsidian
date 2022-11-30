@@ -2,7 +2,7 @@
   import type { App } from "obsidian";
   import { onMount } from "svelte";
   import { validateFolder } from "../validation";
-	import type {Readable, Writable} from "svelte/store"
+	import type {Readable, Writable} from "svelte/store";
 	import {FolderSuggest} from "../file-suggest";
 	import type {IStoicInObsidianSettings} from "../index";
 

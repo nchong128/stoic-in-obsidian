@@ -8,6 +8,7 @@
 	import Arrow from "./Arrow.svelte";
 	import NoteFolderSetting from "./NoteFolderSetting.svelte";
 	import EmotionQuestionToggle from "./EmotionQuestionToggle.svelte";
+	import NoteFormatSetting from "./NoteFormatSetting.svelte";
 
 	let errorMsg = "";
 	let isMorningExpanded = false;
@@ -65,9 +66,8 @@
 				in:slide|local={{ duration: 300 }}
 				out:slide|local={{ duration: 300 }}
 			>
-<!--				<NoteFormatSetting {config} {granularity} />-->
-						<NoteFolderSetting {app} {settings} />
-<!--				<NoteTemplateSetting {app} {config} {granularity} />-->
+				<NoteFormatSetting {app} {settings}  />
+				<NoteFolderSetting {app} {settings} />
 				<EmotionQuestionToggle {app} {settings} />
 			</div>
 		{/if}
