@@ -1,5 +1,5 @@
 import {App, Editor, MarkdownView, Modal, normalizePath, Notice, Plugin, TFile} from 'obsidian';
-import {DEFAULT_SETTINGS, StoicInObsidianSettings} from "./settings";
+import {DEFAULT_SETTINGS, StoicInObsidianSettingsTab} from "./settings";
 import type { IStoicInObsidianSettings } from "./settings";
 import type { Moment } from "moment";
 import {applyTemplateTransformations, getNoteCreationPath, getTemplateContents} from "./utils";
@@ -12,10 +12,12 @@ export default class StoicInObsidianPlugin extends Plugin {
 
 		this.openEveningReflection = this.openEveningReflection.bind(this);
 
-		console.log(this.app);
+		console.log("App ", this.app);
+
+		this.openEveningReflection = this.openEveningReflection.bind(this);
 
 		// Add settings tab
-		this.addSettingTab(new StoicInObsidianSettings(this.app, this));
+		this.addSettingTab(new StoicInObsidianSettingsTab(this.app, this));
 
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon('pen-tool', 'Stoic-in-Obsidian', (evt: MouseEvent) => {
@@ -98,7 +100,6 @@ export default class StoicInObsidianPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-
 	public async createEveningReflection(date: Moment): Promise<TFile> {
 		const filename = date.format(this.settings.eveningFileFormat);
 
@@ -117,10 +118,10 @@ export default class StoicInObsidianPlugin extends Plugin {
 	}
 
 	public async openEveningReflection(date: Moment): Promise<void> {
-		const inNewSplit = true;
 		const { workspace } = this.app;
 		let file = await this.createEveningReflection(date);
-		const leaf = workspace.getLeaf(false).openFile(file, {active: true});
+		const leaf = workspace.getLeaf(false);
+		await leaf.openFile(file, {active: true});
 	}
 
 }
