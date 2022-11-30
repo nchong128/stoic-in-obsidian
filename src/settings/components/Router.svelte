@@ -7,6 +7,7 @@
 	import type { IStoicInObsidianSettings} from "..";
 	import Arrow from "./Arrow.svelte";
 	import NoteFolderSetting from "./NoteFolderSetting.svelte";
+	import EmotionQuestionToggle from "./EmotionQuestionToggle.svelte";
 
 	let errorMsg = "";
 	let isMorningExpanded = false;
@@ -67,7 +68,7 @@
 <!--				<NoteFormatSetting {config} {granularity} />-->
 						<NoteFolderSetting {app} {settings} />
 <!--				<NoteTemplateSetting {app} {config} {granularity} />-->
-<!--				<OpenAtStartupSetting {config} {settings} {granularity} />-->
+				<EmotionQuestionToggle {app} {settings} />
 			</div>
 		{/if}
 	</div>
