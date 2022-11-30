@@ -1,23 +1,8 @@
 import {App, Editor, MarkdownView, Modal, normalizePath, Notice, Plugin, TFile} from 'obsidian';
-import {SampleSettingTab} from "./settings";
+import {DEFAULT_SETTINGS, StoicInObsidianSettings} from "./settings";
+import type { IStoicInObsidianSettings } from "./settings";
 import type { Moment } from "moment";
 import {applyTemplateTransformations, getNoteCreationPath, getTemplateContents} from "./utils";
-
-// Remember to rename these classes and interfaces!
-
-interface IStoicInObsidianSettings {
-	templatePath: string;
-	noteFolderPath: string;
-	fileFormat: string;
-	eveningReflectionEnabled: boolean;
-}
-
-const DEFAULT_SETTINGS: IStoicInObsidianSettings = {
-	templatePath: "Templates/Evening Reflection.md",
-	noteFolderPath: "Journals",
-	fileFormat: "YYYY/DD-MM-YYYY",
-	eveningReflectionEnabled: true
-}
 
 export default class StoicInObsidianPlugin extends Plugin {
 	settings: IStoicInObsidianSettings;
@@ -30,7 +15,7 @@ export default class StoicInObsidianPlugin extends Plugin {
 		console.log(this.app);
 
 		// Add settings tab
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new StoicInObsidianSettings(this.app, this));
 
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon('pen-tool', 'Stoic-in-Obsidian', (evt: MouseEvent) => {
@@ -127,7 +112,7 @@ export default class StoicInObsidianPlugin extends Plugin {
 		);
 
 		// Create the filled template
-		const destPath = await getNoteCreationPath(this.app, filename, this.settings.noteFolderPath);
+		const destPath = await getNoteCreationPath(this.app, filename, this.settings.eveningNoteFolderPath);
 		return this.app.vault.create(destPath, renderedContents);
 	}
 
@@ -139,19 +124,19 @@ export default class StoicInObsidianPlugin extends Plugin {
 	}
 
 }
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
-	}
-}
+//
+// class SampleModal extends Modal {
+// 	constructor(app: App) {
+// 		super(app);
+// 	}
+//
+// 	onOpen() {
+// 		const {contentEl} = this;
+// 		contentEl.setText('Woah!');
+// 	}
+//
+// 	onClose() {
+// 		const {contentEl} = this;
+// 		contentEl.empty();
+// 	}
+// }

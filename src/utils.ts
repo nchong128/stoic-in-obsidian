@@ -71,7 +71,7 @@ export function applyTemplateTransformations(  filename: string,
 	templateContents = rawTemplateContents
 		.replace(/{{\s*date\s*}}/gi, filename)
 		.replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
-		.replace(/{{\s*title\s*}}ß/gi, filename);
+		.replace(/{{\s*title\s*}}/gi, filename);
 
 	// Make day-granular transformations
 	templateContents = templateContents
@@ -91,8 +91,11 @@ export function applyTemplateTransformations(  filename: string,
 				}
 
 				if (momentFormat) {
+					console.info(`returning moment formatted date: ${currentDate.format(momentFormat.substring(1).trim())}`);
 					return currentDate.format(momentFormat.substring(1).trim());
 				}
+
+				console.info(`returning non-moment formatted date: ${currentDate.format(format)}`);
 				return currentDate.format(format);
 			}
 		);
