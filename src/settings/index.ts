@@ -4,7 +4,7 @@ import type StoicInObsidianPlugin from "../main";
 export interface IStoicInObsidianSettings {
 	templatePath: string;
 	eveningNoteFolderPath: string;
-	fileFormat: string;
+	eveningFileFormat: string;
 	morningReflectionEnabled: boolean;
 	eveningReflectionEnabled: boolean;
 	showEmotionQuestionsEvening:  boolean;
@@ -20,7 +20,7 @@ export const DEFAULT_SETTINGS: IStoicInObsidianSettings = {
 	eveningReflectionEnabled: true,
 	showEmotionQuestionsEvening: true,
 	eveningNoteFolderPath: "Journals",
-	fileFormat: "YYYY/DD-MM-YYYY"
+	eveningFileFormat: "YYYY/[Evening Reflection-] DD-MM-YYYY"
 }
 
 export class StoicInObsidianSettings extends PluginSettingTab {
@@ -38,35 +38,26 @@ export class StoicInObsidianSettings extends PluginSettingTab {
 
 		containerEl.createEl('h1', {text: 'stoic-in-obsidian'});
 
-		new Setting(containerEl)
-			.setName('file format')
-			// .setDesc('')
-			.addText(text => text
-				.setPlaceholder(DEFAULT_SETTINGS.fileFormat)
-				.setValue(this.plugin.settings.fileFormat)
-				.onChange(async (value) => {
-					console.log('File format changed: ' + value);
-					this.plugin.settings.fileFormat = value;
-					await this.plugin.saveSettings();
-				}));
 
 		new Setting(containerEl)
-			.setName('evening reflection enabled.')
+			.setName('evening reflection enabled')
 			.addToggle(tog => tog
 				.setValue(this.plugin.settings.eveningReflectionEnabled)
 				.onChange(async (value) => {
-					console.log('Evening reflection changed: ' + value);
+					console.log('evening reflection changed: ' + value);
 					this.plugin.settings.eveningReflectionEnabled = value;
 					await this.plugin.saveSettings();
 				}));
 
 		new Setting(containerEl)
-			.setName('show emotion questions')
-			.addToggle(tog => tog
-				.setValue(this.plugin.settings.showEmotionQuestionsEvening)
+			.setName('evening file format')
+			// .setDesc('')
+			.addText(text => text
+				.setPlaceholder(DEFAULT_SETTINGS.eveningFileFormat)
+				.setValue(this.plugin.settings.eveningFileFormat)
 				.onChange(async (value) => {
-					console.log('emotion questions changed: ' + value);
-					this.plugin.settings.showEmotionQuestionsEvening = value;
+					console.log('evening file format changed: ' + value);
+					this.plugin.settings.eveningFileFormat = value;
 					await this.plugin.saveSettings();
 				}));
 
@@ -83,15 +74,14 @@ export class StoicInObsidianSettings extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('file format')
-			// .setDesc('')
-			.addText(text => text
-				.setPlaceholder(DEFAULT_SETTINGS.fileFormat)
-				.setValue(this.plugin.settings.fileFormat)
+			.setName('show emotion questions')
+			.addToggle(tog => tog
+				.setValue(this.plugin.settings.showEmotionQuestionsEvening)
 				.onChange(async (value) => {
-					console.log('File format changed: ' + value);
-					this.plugin.settings.fileFormat = value;
+					console.log('emotion questions changed: ' + value);
+					this.plugin.settings.showEmotionQuestionsEvening = value;
 					await this.plugin.saveSettings();
 				}));
+
 	}
 }

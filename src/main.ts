@@ -100,14 +100,14 @@ export default class StoicInObsidianPlugin extends Plugin {
 
 
 	public async createEveningReflection(date: Moment): Promise<TFile> {
-		const filename = `${date.format("YYYY")}/Evening Reflection- ${date.format("DD-MM-YYYY")}`;
+		const filename = date.format(this.settings.eveningFileFormat);
 
 		// Retrieve template and fill with content
 		const templateContents = await getTemplateContents(this.app, this.settings.templatePath);
 		const renderedContents = applyTemplateTransformations(
 			filename,
 			date,
-			this.settings.fileFormat,
+			this.settings.eveningFileFormat,
 			templateContents
 		);
 
