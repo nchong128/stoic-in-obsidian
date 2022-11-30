@@ -1,29 +1,42 @@
-import {App, Editor, MarkdownView, Modal, Notice, Plugin} from 'obsidian';
+import {App, Editor, MarkdownView, Modal, normalizePath, Notice, Plugin, TFile} from 'obsidian';
 import {SampleSettingTab} from "./settings";
+import type { Moment } from "moment";
+import {getNoteCreationPath} from "./utils";
 
 // Remember to rename these classes and interfaces!
 
-interface MyPluginSettings {
-	mySetting: string;
+interface IStoicInObsidianSettings {
+	templatePath: string;
+	noteFolderPath: string;
+	fileFormat: string;
+	eveningReflectionEnabled: boolean;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
+const DEFAULT_SETTINGS: IStoicInObsidianSettings = {
+	templatePath: "Templates/Evening Reflection.md",
+	noteFolderPath: "Journals",
+	fileFormat: "YYYY/DD-MM-YYYY",
+	eveningReflectionEnabled: true
 }
 
 export default class StoicInObsidianPlugin extends Plugin {
-	settings: MyPluginSettings;
+	settings: IStoicInObsidianSettings;
 
 	async onload() {
 		await this.loadSettings();
+
+		this.openEveningReflection = this.openEveningReflection.bind(this);
+
+		console.log(this.app);
 
 		// Add settings tab
 		this.addSettingTab(new SampleSettingTab(this.app, this));
 
 		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Stoic-in-Obsidian', (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('pen-tool', 'Stoic-in-Obsidian', (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
-			new Notice('Start evening reflection');
+			new Notice('Starting evening reflection');
+			this.openEveningReflection(window.moment())
 		});
 
 		// Perform additional things with the ribbon
@@ -51,6 +64,7 @@ export default class StoicInObsidianPlugin extends Plugin {
 				editor.replaceSelection('Sample Editor Command');
 			}
 		});
+
 		// This adds a complex command that can check whether the current state of the app allows execution of the command
 		this.addCommand({
 			id: 'open-sample-modal-complex',
@@ -93,6 +107,97 @@ export default class StoicInObsidianPlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
+
+	/**
+	 * Finds the template used for a note
+	 * @param app
+	 * @param templatePath
+	 * @private
+	 */
+	private async getTemplateContents(
+		app: App,
+		templatePath: string | undefined
+	): Promise<string> {
+
+		const { metadataCache, vault } = app;
+		const normalizedTemplatePath = normalizePath(templatePath ?? "");
+		if (templatePath === "/") {
+			return Promise.resolve("");
+		}
+
+		try {
+			const templateFile = metadataCache.getFirstLinkpathDest(normalizedTemplatePath, "");
+			return templateFile ? vault.cachedRead(templateFile) : "";
+		} catch (err) {
+			console.error(
+				`Failed to read the evening note template '${normalizedTemplatePath}'`,
+				err
+			);
+			new Notice("Failed to read the evening note template");
+			return "";
+		}
+	}
+
+	private applyTemplateTransformations(  filename: string,
+																				 date: Moment,
+																				 format: string,
+																				 rawTemplateContents: string) {
+		let templateContents = rawTemplateContents;
+
+		templateContents = rawTemplateContents
+			.replace(/{{\s*date\s*}}/gi, filename)
+			.replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
+			.replace(/{{\s*title\s*}}ß/gi, filename);
+
+		// Make day-granular transformations
+		templateContents = templateContents
+			.replace(/{{\s*yesterday\s*}}/gi, date.clone().subtract(1, "day").format(format))
+			.replace(/{{\s*tomorrow\s*}}/gi, date.clone().add(1, "d").format(format))
+			.replace(
+				/{{\s*(date|time)\s*(([+-]\d+)([yqmwdhs]))?\s*(:.+?)?}}/gi,
+				(_, _timeOrDate, calc, timeDelta, unit, momentFormat) => {
+					const now = window.moment();
+					const currentDate = date.clone().set({
+						hour: now.get("hour"),
+						minute: now.get("minute"),
+						second: now.get("second"),
+					});
+					if (calc) {
+						currentDate.add(parseInt(timeDelta, 10), unit);
+					}
+
+					if (momentFormat) {
+						return currentDate.format(momentFormat.substring(1).trim());
+					}
+					return currentDate.format(format);
+				}
+			);
+
+		return templateContents;
+	}
+
+
+
+	public async createEveningReflection(date: Moment): Promise<TFile> {
+		const filename = `${date.format("YYYY")}/Evening Reflection- ${date.format("DD-MM-YYYY")}`;
+		const templateContents = await this.getTemplateContents(this.app, this.settings.templatePath);
+		const renderedContents = this.applyTemplateTransformations(
+			filename,
+			date,
+			this.settings.fileFormat,
+			templateContents
+		);
+		const destPath = await getNoteCreationPath(this.app, filename, this.settings.noteFolderPath);
+		return this.app.vault.create(destPath, renderedContents);
+	}
+
+	public async openEveningReflection(date: Moment): Promise<void> {
+		const inNewSplit = true;
+		const { workspace } = this.app;
+		let file = await this.createEveningReflection(date);
+		const leaf = workspace.getLeaf(false).openFile(file, { active: true});
+	}
+
 }
 
 class SampleModal extends Modal {
@@ -110,4 +215,3 @@ class SampleModal extends Modal {
 		contentEl.empty();
 	}
 }
-
