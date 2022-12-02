@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import { validateFormat, validateFormatComplexity } from "../validation";
+  import { validateFormat, validateFormatComplexity } from "../../validation";
 	import {App} from "obsidian";
 	import type {Readable, Writable} from "svelte/store";
-	import {type IStoicInObsidianSettings, DEFAULT_SETTINGS} from "../index";
+	import {type IStoicInObsidianSettings, DEFAULT_SETTINGS} from "../../index";
 
 	export let app: App;
 	export let settings: Writable<IStoicInObsidianSettings>;
@@ -34,11 +34,11 @@
     <div class="setting-item-name"></div>
     <div class="setting-item-description">
       <a href="https://momentjs.com/docs/#/displaying/format/"
-        >syntax Reference</a
+        >syntax reference</a
       >
       <div>
         your current syntax looks like this: <b class="u-pop"
-          >{window.moment().format(value || DEFAULT_SETTINGS.eveningFileFormat )}
+          >{window.moment().format(value || DEFAULT_SETTINGS.morningFileFormat )}
         </b>
       </div>
     </div>
@@ -48,12 +48,12 @@
   </div>
   <div class="setting-item-control">
     <input
-      bind:value={settings.eveningFileFormat}
+      bind:value={settings.morningFileFormat}
       bind:this={inputEl}
       class:has-error={!!error}
       type="text"
       spellcheck={false}
-      placeholder={DEFAULT_SETTINGS.eveningFileFormat}
+      placeholder={DEFAULT_SETTINGS.morningFileFormat}
       on:change={onChange}
       on:input={clearError}
     />

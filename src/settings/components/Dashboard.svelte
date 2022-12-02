@@ -1,14 +1,19 @@
 <script lang="ts">
   import type { App } from "obsidian";
-	import { slide } from "svelte/transition";
 
   import { onDestroy, onMount } from "svelte";
   import { writable, type Writable } from "svelte/store";
 	import type { IStoicInObsidianSettings} from "..";
 	import Arrow from "./Arrow.svelte";
-	import NoteFolderSetting from "./NoteFolderSetting.svelte";
+	import NoteFolderSetting from "./eveningReflection/EveningNoteFolderSetting.svelte";
 	import EmotionQuestionToggle from "./EmotionQuestionToggle.svelte";
-	import NoteFormatSetting from "./NoteFormatSetting.svelte";
+	import EveningNoteFormatSetting from "./eveningReflection/EveningNoteFormatSetting.svelte";
+
+	import { slide } from "svelte/transition";
+	import DayFocusQuestionToggle from "./DayFocusQuestionToggle.svelte";
+	import MorningNoteFormatSetting from "./morningReflection/MorningNoteFormatSetting.svelte";
+	import MorningNoteFolderSetting from "./morningReflection/MorningNoteFolderSetting.svelte";
+	import EveningNoteFolderSetting from "./eveningReflection/EveningNoteFolderSetting.svelte";
 
 	let errorMsg = "";
 	let isMorningExpanded = false;
@@ -35,6 +40,44 @@
 {/if}
 
 <div class="calendarset-groups">
+	<div class="periodic-group">
+		<div
+			class="setting-item setting-item-heading periodic-group-heading"
+			on:click={toggleMorningExpand}
+		>
+			<div class="setting-item-info">
+				<h3 class="setting-item-name periodic-group-title">
+					<Arrow />
+					morning reflections
+				</h3>
+			</div>
+			<div class="setting-item-control">
+				<label
+					class="checkbox-container"
+					class:is-enabled={settings.morningReflectionEnabled}
+					on:click|stopPropagation
+				>
+					<input
+						type="checkbox"
+						bind:checked={settings.morningReflectionEnabled}
+						style="display: none;"
+					/>
+				</label>
+			</div>
+		</div>
+		{#if isMorningExpanded}
+			<div
+				class="periodic-group-content"
+				in:slide|local={{ duration: 300 }}
+				out:slide|local={{ duration: 300 }}
+			>
+				<MorningNoteFormatSetting {app} {settings} />
+				<MorningNoteFolderSetting {app} {settings} />
+				<DayFocusQuestionToggle {app} {settings} />
+			</div>
+		{/if}
+	</div>
+
 	<div class="periodic-group">
 		<div
 			class="setting-item setting-item-heading periodic-group-heading"
@@ -66,8 +109,8 @@
 				in:slide|local={{ duration: 300 }}
 				out:slide|local={{ duration: 300 }}
 			>
-				<NoteFormatSetting {app} {settings}  />
-				<NoteFolderSetting {app} {settings} />
+				<EveningNoteFormatSetting {app} {settings}  />
+				<EveningNoteFolderSetting {app} {settings} />
 				<EmotionQuestionToggle {app} {settings} />
 			</div>
 		{/if}

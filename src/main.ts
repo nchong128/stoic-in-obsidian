@@ -3,6 +3,8 @@ import {DEFAULT_SETTINGS, StoicInObsidianSettingsTab} from "./settings";
 import type { IStoicInObsidianSettings } from "./settings";
 import type { Moment } from "moment";
 import {applyTemplateTransformations, getNoteCreationPath, getTemplateContents} from "./utils";
+import {EVENING_REFLECTION_STARTING_MESSAGE} from "./constants";
+
 
 export default class StoicInObsidianPlugin extends Plugin {
 	settings: IStoicInObsidianSettings;
@@ -20,9 +22,9 @@ export default class StoicInObsidianPlugin extends Plugin {
 		this.addSettingTab(new StoicInObsidianSettingsTab(this.app, this));
 
 		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('pen-tool', 'Stoic-in-Obsidian', (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('pen-tool', 'stoic in obsidian', (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
-			new Notice('Starting a new evening reflection');
+			new Notice(EVENING_REFLECTION_STARTING_MESSAGE);
 			this.openEveningReflection(window.moment())
 		});
 
@@ -32,18 +34,12 @@ export default class StoicInObsidianPlugin extends Plugin {
 		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
 		const streakItemEl = this.addStatusBarItem();
 
-		function getCurrentStreak() {
-
-		}
-
-		streakItemEl.setText(`Streak: ${getCurrentStreak()}`);
-
 		// Evening reflection command
 		this.addCommand({
 			id: 'open-new-evening-reflection',
-			name: "Open today's evening reflection",
+			name: "open today's evening reflection",
 			callback: () => {
-				new Notice('Starting a new evening reflection');
+				new Notice(EVENING_REFLECTION_STARTING_MESSAGE);
 				this.openEveningReflection(window.moment())
 			}
 		});

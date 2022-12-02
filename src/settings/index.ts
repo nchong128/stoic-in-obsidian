@@ -1,28 +1,36 @@
 import {App, PluginSettingTab, Setting} from "obsidian";
 import type StoicInObsidianPlugin from "../main";
 import type {SvelteComponent} from "svelte";
-import SettingsRouter from "./components/Router.svelte";
+import SettingsRouter from "./components/Dashboard.svelte";
 
 export interface IStoicInObsidianSettings {
 	templatePath: string;
+
+	morningReflectionEnabled: boolean;
+	morningNoteFolderPath: string;
+	morningFileFormat: string;
+	morningShowDayFocusQuestions: boolean;
+
+	eveningReflectionEnabled: boolean;
 	eveningNoteFolderPath: string;
 	eveningFileFormat: string;
-	morningReflectionEnabled: boolean;
-	eveningReflectionEnabled: boolean;
-	showEmotionQuestionsEvening:  boolean;
+	eveningShowEmotionQuestions:  boolean;
 }
 
 export const DEFAULT_SETTINGS: IStoicInObsidianSettings = {
 	templatePath: "Templates/Evening Reflection.md",
 
 	// Morning Reflections
-	morningReflectionEnabled: false,
+	morningReflectionEnabled: true,
+	morningNoteFolderPath: "Journals",
+	morningFileFormat: "YYYY/[Morning Reflection-] DD-MM-YYYY",
+	morningShowDayFocusQuestions: true,
 
 	// Evening Reflections
 	eveningReflectionEnabled: true,
-	showEmotionQuestionsEvening: true,
 	eveningNoteFolderPath: "Journals",
-	eveningFileFormat: "YYYY/[Evening Reflection-] DD-MM-YYYY"
+	eveningFileFormat: "YYYY/[Evening Reflection-] DD-MM-YYYY",
+	eveningShowEmotionQuestions: true
 }
 
 export class StoicInObsidianSettingsTab extends PluginSettingTab {
