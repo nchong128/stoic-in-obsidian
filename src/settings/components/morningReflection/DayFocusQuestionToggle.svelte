@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { Writable } from "svelte/store";
-	import type { IStoicInObsidianSettings }  from "../index";
+	import type { IStoicInObsidianSettings }  from "../../index";
 	import {App} from "obsidian";
-	import Toggle from "./Toggle.svelte";
-	import SettingItem from "./SettingItem.svelte";
+	import Toggle from "../Toggle.svelte";
+	import SettingItem from "../SettingItem.svelte";
 
 	export let app: App;
   export let settings: Writable<IStoicInObsidianSettings>;
