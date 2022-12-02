@@ -1,7 +1,6 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { ReactView } from "./ReactView";
 import { createRoot } from "react-dom/client";
 import { AppContext } from "./context";
 
@@ -24,7 +23,7 @@ class ExampleView extends ItemView {
 		const root = createRoot(this.containerEl.children[1]);
 		root.render(
 			<AppContext.Provider value={this.app}>
-				<ReactView/>
+
 			</AppContext.Provider>
 		);
 	}

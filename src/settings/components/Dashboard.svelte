@@ -6,11 +6,11 @@
 	import type { IStoicInObsidianSettings} from "..";
 	import Arrow from "./Arrow.svelte";
 	import NoteFolderSetting from "./eveningReflection/EveningNoteFolderSetting.svelte";
-	import EmotionQuestionToggle from "./EmotionQuestionToggle.svelte";
+	import EmotionQuestionToggle from "./eveningReflection/EmotionQuestionToggle.svelte";
 	import EveningNoteFormatSetting from "./eveningReflection/EveningNoteFormatSetting.svelte";
 
 	import { slide } from "svelte/transition";
-	import DayFocusQuestionToggle from "./DayFocusQuestionToggle.svelte";
+	import DayFocusQuestionToggle from "./morningReflection/DayFocusQuestionToggle.svelte";
 	import MorningNoteFormatSetting from "./morningReflection/MorningNoteFormatSetting.svelte";
 	import MorningNoteFolderSetting from "./morningReflection/MorningNoteFolderSetting.svelte";
 	import EveningNoteFolderSetting from "./eveningReflection/EveningNoteFolderSetting.svelte";
