@@ -1,5 +1,8 @@
 import {App, normalizePath, Notice} from "obsidian";
 import type {Moment} from "moment";
+import type {NoteType} from "./types";
+import type StoicInObsidianPlugin from "./main";
+import {noteTypesToMatchKey} from "./types";
 
 export async function getNoteCreationPath(
 	app: App,
@@ -62,7 +65,22 @@ export async function getTemplateContents(
 	}
 }
 
-export function applyTemplateTransformations(  filename: string,
+
+export function findNoteType(fileName: string, plugin: StoicInObsidianPlugin): NoteType {
+	// Match each file format with the file name for a match
+	for (const [noteType, matchKey] of Object.entries(noteTypesToMatchKey)) {
+		console.debug(`SiO: Attempting to match note type ${noteType} with matching key ${matchKey} with file ${fileName}`);
+
+		if (fileName.match(matchKey)) {
+			return noteType;
+		}
+	}
+
+	// Notes that do not match anything are considered "blank-page" journals
+	return "blank-page";
+}
+
+export function applyTemplateTransformations(filename: string,
 	date: Moment,
 	format: string,
 	rawTemplateContents: string) {
@@ -91,11 +109,11 @@ export function applyTemplateTransformations(  filename: string,
 				}
 
 				if (momentFormat) {
-					console.info(`returning moment formatted date: ${currentDate.format(momentFormat.substring(1).trim())}`);
+					console.debug(`returning moment formatted date: ${currentDate.format(momentFormat.substring(1).trim())}`);
 					return currentDate.format(momentFormat.substring(1).trim());
 				}
 
-				console.info(`returning non-moment formatted date: ${currentDate.format(format)}`);
+				console.debug(`returning non-moment formatted date: ${currentDate.format(format)}`);
 				return currentDate.format(format);
 			}
 		);

@@ -4,19 +4,20 @@ import type { IStoicInObsidianSettings } from "./settings";
 import type { Moment } from "moment";
 import {applyTemplateTransformations, getNoteCreationPath, getTemplateContents} from "./utils";
 import {EVENING_REFLECTION_STARTING_MESSAGE} from "./constants";
-
+import {NotesCache} from "./cache";
 
 export default class StoicInObsidianPlugin extends Plugin {
+	private cache: NotesCache;
 	settings: IStoicInObsidianSettings;
 
 	async onload() {
 		await this.loadSettings();
 
+		this.cache = new NotesCache(this.app, this);
+
 		this.openEveningReflection = this.openEveningReflection.bind(this);
 
 		console.log("App ", this.app);
-
-		this.openEveningReflection = this.openEveningReflection.bind(this);
 
 		// Add settings tab
 		this.addSettingTab(new StoicInObsidianSettingsTab(this.app, this));
@@ -115,25 +116,17 @@ export default class StoicInObsidianPlugin extends Plugin {
 
 	public async openEveningReflection(date: Moment): Promise<void> {
 		const { workspace } = this.app;
-		let file = await this.createEveningReflection(date);
+
+		let file = this.cache.getNote(date);
+
+		if (!file) {
+			console.log("SiO: No file found. Creating...");
+			file = await this.createEveningReflection(date);
+		}
+
 		const leaf = workspace.getLeaf(false);
 		await leaf.openFile(file, {active: true});
 	}
 
 }
-//
-// class SampleModal extends Modal {
-// 	constructor(app: App) {
-// 		super(app);
-// 	}
-//
-// 	onOpen() {
-// 		const {contentEl} = this;
-// 		contentEl.setText('Woah!');
-// 	}
-//
-// 	onClose() {
-// 		const {contentEl} = this;
-// 		contentEl.empty();
-// 	}
-// }
+

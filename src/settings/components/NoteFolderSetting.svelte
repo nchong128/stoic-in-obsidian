@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { App } from "obsidian";
   import { onMount } from "svelte";
-  import { validateFolder } from "../../validation";
+  import { validateFolder } from "../validation";
 	import type {Readable, Writable} from "svelte/store";
-	import {FolderSuggest} from "../../file-suggest";
-	import type {IStoicInObsidianSettings} from "../../index";
+	import {FolderSuggest} from "../file-suggest";
+	import type {IStoicInObsidianSettings} from "../index";
 
 	export let app: App;
 	export let settings: Writable<IStoicInObsidianSettings>;
@@ -38,7 +38,7 @@
   </div>
   <div class="setting-item-control">
     <input
-      bind:value={settings.morningNoteFolderPath}
+      bind:value={settings.noteFolderPath}
       bind:this={inputEl}
       class:has-error={!!error}
       type="text"
