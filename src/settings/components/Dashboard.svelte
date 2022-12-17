@@ -5,15 +5,13 @@
   import { writable, type Writable } from "svelte/store";
 	import type { IStoicInObsidianSettings} from "..";
 	import Arrow from "./Arrow.svelte";
-	import NoteFolderSetting from "./eveningReflection/EveningNoteFolderSetting.svelte";
 	import EmotionQuestionToggle from "./eveningReflection/EmotionQuestionToggle.svelte";
 	import EveningNoteFormatSetting from "./eveningReflection/EveningNoteFormatSetting.svelte";
 
 	import { slide } from "svelte/transition";
 	import DayFocusQuestionToggle from "./morningReflection/DayFocusQuestionToggle.svelte";
 	import MorningNoteFormatSetting from "./morningReflection/MorningNoteFormatSetting.svelte";
-	import MorningNoteFolderSetting from "./morningReflection/MorningNoteFolderSetting.svelte";
-	import EveningNoteFolderSetting from "./eveningReflection/EveningNoteFolderSetting.svelte";
+	import NoteFolderSetting from "./NoteFolderSetting.svelte";
 
 	let errorMsg = "";
 	let isMorningExpanded = false;
@@ -40,6 +38,25 @@
 {/if}
 
 <div class="calendarset-groups">
+	<div class="periodic-group">
+		<div
+			class="setting-item setting-item-heading periodic-group-heading"
+		>
+			<div class="setting-item-info">
+				<h3 class="setting-item-name periodic-group-title">
+					general
+				</h3>
+			</div>
+		</div>
+		<div
+			class="periodic-group-content"
+			in:slide|local={{ duration: 300 }}
+			out:slide|local={{ duration: 300 }}
+		>
+			<NoteFolderSetting {app} {settings} />
+		</div>
+	</div>
+
 	<div class="periodic-group">
 		<div
 			class="setting-item setting-item-heading periodic-group-heading"
@@ -72,7 +89,6 @@
 				out:slide|local={{ duration: 300 }}
 			>
 				<MorningNoteFormatSetting {app} {settings} />
-				<MorningNoteFolderSetting {app} {settings} />
 				<DayFocusQuestionToggle {app} {settings} />
 			</div>
 		{/if}
@@ -110,7 +126,6 @@
 				out:slide|local={{ duration: 300 }}
 			>
 				<EveningNoteFormatSetting {app} {settings}  />
-				<EveningNoteFolderSetting {app} {settings} />
 				<EmotionQuestionToggle {app} {settings} />
 			</div>
 		{/if}
