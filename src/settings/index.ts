@@ -5,31 +5,29 @@ import SettingsRouter from "./components/Dashboard.svelte";
 
 export interface IStoicInObsidianSettings {
 	templatePath: string;
+	noteFolderPath: string;
 
 	morningReflectionEnabled: boolean;
-	morningNoteFolderPath: string;
 	morningFileFormat: string;
 	morningShowDayFocusQuestions: boolean;
 
 	eveningReflectionEnabled: boolean;
-	eveningNoteFolderPath: string;
 	eveningFileFormat: string;
 	eveningShowEmotionQuestions:  boolean;
 }
 
 export const DEFAULT_SETTINGS: IStoicInObsidianSettings = {
 	templatePath: "Templates/Evening Reflection.md",
+	noteFolderPath: "Journals",
 
 	// Morning Reflections
 	morningReflectionEnabled: true,
-	morningNoteFolderPath: "Journals",
-	morningFileFormat: "YYYY/[Morning Reflection-] DD-MM-YYYY",
+	morningFileFormat: "YYYY/YYYY-MM-DD [(Morning Reflection)]",
 	morningShowDayFocusQuestions: true,
 
 	// Evening Reflections
 	eveningReflectionEnabled: true,
-	eveningNoteFolderPath: "Journals",
-	eveningFileFormat: "YYYY/[Evening Reflection-] DD-MM-YYYY",
+	eveningFileFormat: "YYYY/YYYY-MM-DD [(Evening Reflection)]",
 	eveningShowEmotionQuestions: true
 }
 
